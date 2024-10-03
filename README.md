@@ -10,3 +10,5 @@
 并使用pip install file_name.whl进行安装
 直接使用pip install pyopengl安装可能会无法运行
 
+### 实验1
+请确保实验1的 Object 文件夹位于 Python 运行环境的工作目录中，否则无法读取 .obj 文件
