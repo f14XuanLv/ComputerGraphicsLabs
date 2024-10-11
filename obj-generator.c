@@ -24,14 +24,36 @@ typedef struct Face {
     int w;
 } Face;
 
+float square(float x, float y) {
+    return 1;
+}
+
+float cone(float x, float y) {
+    return sqrt(pow(x, 2) + pow(y, 2));
+}
+
+float sphere(float x, float y) {
+    int r = 10;
+    return sqrt(pow(r, 2) - pow(x, 2) - pow(y, 2));
+}
+
+float ellipsoid(float x, float y) {
+    int a = 6;
+    int b = 8;
+    int c = 10;
+    return sqrt((1 - pow(x, 2) / pow(a, 2) - pow(y, 2) / pow(b, 2)) * pow(c, 2));
+}
+
+float paraboloid(float x, float y) {
+    int a = 4;
+    int b = 3;
+    return pow(x, 2) / pow(a, 2) + pow(y, 2) / pow(b, 2);
+}
+
 float hyperbolic_paraboloid(float x, float y) {
     int a = 4;
     int b = 3;
     return pow(x, 2) / pow(a, 2) - pow(y, 2) / pow(b, 2);
-}
-
-float square(float x, float y) {
-    return 1;
 }
 
 int gen_vertices(const Entry *entry, Vertex *buf[], size_t *len) {
@@ -89,21 +111,57 @@ int gen_faces(const Entry *entry, Vertex *vertices, size_t nvertices, Face *buf[
 int main(void) {
     Entry entries[] = {
         {
-            .name = "hyperbolic_paraboloid",
-            .func = hyperbolic_paraboloid,
-            .x_max = 10.0f,
-            .y_max = 8.0f,
-            .x_min = -10.0f,
-            .y_min = -8.0f,
-            .resol = 1.0f
-        },
-        {
             .name = "square",
             .func = square,
             .x_max = 10.0f,
-            .y_max = 8.0f,
+            .y_max = 10.0f,
             .x_min = -10.0f,
-            .y_min = -8.0f,
+            .y_min = -10.0f,
+            .resol = 1.0f
+        },
+        {
+            .name = "cone",
+            .func = cone,
+            .x_max = 10.0f,
+            .y_max = 10.0f,
+            .x_min = -10.0f,
+            .y_min = -10.0f,
+            .resol = 1.0f
+        },
+        {
+            .name = "sphere",
+            .func = sphere,
+            .x_max = 10.0f,
+            .y_max = 10.0f,
+            .x_min = -10.0f,
+            .y_min = -10.0f,
+            .resol = 1.0f
+        },
+        {
+            .name = "ellipsoid",
+            .func = ellipsoid,
+            .x_max = 10.0f,
+            .y_max = 10.0f,
+            .x_min = -10.0f,
+            .y_min = -10.0f,
+            .resol = 1.0f
+        },
+        {
+            .name = "paraboloid",
+            .func = paraboloid,
+            .x_max = 10.0f,
+            .y_max = 10.0f,
+            .x_min = -10.0f,
+            .y_min = -10.0f,
+            .resol = 1.0f
+        },
+        {
+            .name = "hyperbolic_paraboloid",
+            .func = hyperbolic_paraboloid,
+            .x_max = 10.0f,
+            .y_max = 10.0f,
+            .x_min = -10.0f,
+            .y_min = -10.0f,
             .resol = 1.0f
         },
     };
