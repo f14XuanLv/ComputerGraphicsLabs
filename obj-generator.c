@@ -81,19 +81,19 @@ int gen_vertices(const Entry *entry, Vertex *buf[], size_t *len) {
     return 0;
 }
 
-int gen_faces(const Entry *entry, Vertex *vertices, size_t nvertices, Face *buf[], size_t *len) {
+int gen_faces(const Entry *entry, Face *buf[], size_t *len) {
     size_t xs = (size_t)((entry->x_max - entry->x_min) / entry->resol);
     size_t ys = (size_t)((entry->y_max - entry->y_min) / entry->resol);
     size_t curr = 0;
     size_t faces = (xs - 1) * (ys - 1) * 2;
     if (*buf == NULL) {
-        *buf = malloc(faces * sizeof(Vertex));
+        *buf = malloc(faces * sizeof(Face));
         *len = faces;
-    } else if (*len < nvertices) {
+    } else if (*len < faces) {
         return 1;
     }
-    for (int y = 0; y < ys - 1; y++) {
-        for (int x = 0; x < xs - 1; x++) {
+    for (size_t y = 0; y < ys - 1; y++) {
+        for (size_t x = 0; x < xs - 1; x++) {
             Face face = {
                 .u = y * xs + x + 1,
                 .v = y * xs + x + 1 + 1,
@@ -166,7 +166,7 @@ int main(void) {
         },
     };
 
-    for (int i = 0; i < sizeof(entries) / sizeof(Entry); i++) {
+    for (size_t i = 0; i < sizeof(entries) / sizeof(Entry); i++) {
         Vertex *vertices = NULL;
         size_t nvertices = 0;
         if (gen_vertices(&(entries[i]), &vertices, &nvertices) != 0) {
@@ -175,16 +175,16 @@ int main(void) {
         }
         Face *faces = NULL;
         size_t nfaces = 0;
-        if (gen_faces(&(entries[i]), vertices, nvertices, &faces, &nfaces) != 0) {
+        if (gen_faces(&(entries[i]), &faces, &nfaces) != 0) {
             fprintf(stderr, "Error generating faces for %s\n", entries[i].name);
             exit(1);
         }
         char buf[FILENAME_MAX];
         snprintf(buf, FILENAME_MAX, "%s.obj", entries[i].name);
         FILE *fp = fopen(buf, "w");
-        for (int i = 0; i < nvertices; i++)
+        for (size_t i = 0; i < nvertices; i++)
             fprintf(fp, "v %f %f %f\n", vertices[i].x, vertices[i].y, vertices[i].z);
-        for (int i = 0; i < nfaces; i++)
+        for (size_t i = 0; i < nfaces; i++)
             fprintf(fp, "f %d %d %d\n", faces[i].u, faces[i].v, faces[i].w);
         fclose(fp);
         free(vertices);
