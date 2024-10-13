@@ -7,6 +7,7 @@ class CustomMesh:
         self.vertices = [] # 顶点坐标列表
         self.faces = [] # 面片列表，每个面片是一个顶点索引列表，面的顶点按照逆时针排列
         self.normals = [] # 法向量列表
+        self.indices = []# 拆分三角形后的面片顶点索引列表
 
     # 从obj文件读取网格数据，支持多种编码格式
     @classmethod
@@ -35,6 +36,7 @@ class CustomMesh:
 
         mesh.vertices = np.array(mesh.vertices)
         mesh.calculate_normals()
+        mesh.triangulate_face()
         return mesh
 
     # 计算网格的法向量，使用拉普拉斯算子平滑法线
@@ -89,6 +91,7 @@ class CustomMesh:
         new_mesh.vertices = np.copy(self.vertices)
         new_mesh.faces = [face.copy() for face in self.faces]
         new_mesh.normals = np.copy(self.normals)
+        new_mesh.triangulate_face()
         return new_mesh
 
     # 判断网格是否为三角网格
@@ -240,6 +243,17 @@ class CustomMesh:
         new_mesh.calculate_normals()
 
         return new_mesh
+
+    #拆分三角形
+    def triangulate_face(self):
+        for face in self.faces:
+        # 假设 `face` 是一个包含 n 个顶点的多边形
+            v0 = face[0]  # 固定扇形中心点
+            for i in range(1, len(face) - 1):
+                v1 = face[i]     # 第 i 个顶点
+                v2 = face[i + 1] # 第 i+1 个顶点
+                self.indices.extend([v0, v1, v2])  # 生成一个三角形
+
 
     # 弃用的 Catmull-Clark 算法，虽然这个算法答案不正确，但是细分效果很有趣，故保留
     # def subdivide_catmull_clark(self):
